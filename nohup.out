@@ -1,0 +1,53 @@
+2024/04/10 00:08:20 config yamlFile load Init success
+2024/04/10 00:08:20 mysql load Init success
+2024/04/10 00:08:20 oss load Init success
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /swagger/*any             --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (4 handlers)
+[GIN-debug] POST   /api/login/login_by_account --> travel-server/module/login.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] POST   /api/common/upload_file   --> travel-server/module/common.uploadFile (4 handlers)
+[GIN-debug] GET    /api/user/query_list      --> travel-server/module/user.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] GET    /api/user/whoami          --> travel-server/module/user.InitRouter.WrapHandler[...].func3 (5 handlers)
+[GIN-debug] GET    /api/user/detail          --> travel-server/module/user.InitRouter.WrapHandler[...].func4 (4 handlers)
+[GIN-debug] POST   /api/user/create          --> travel-server/module/user.InitRouter.WrapHandler[...].func5 (4 handlers)
+[GIN-debug] POST   /api/user/delete          --> travel-server/module/user.InitRouter.WrapHandler[...].func6 (4 handlers)
+[GIN-debug] POST   /api/user/update          --> travel-server/module/user.InitRouter.WrapHandler[...].func8 (5 handlers)
+[GIN-debug] GET    /api/site/detail          --> travel-server/module/site.detail (4 handlers)
+[GIN-debug] POST   /api/site/update          --> travel-server/module/site.update (4 handlers)
+[GIN-debug] GET    /api/article/query_list   --> travel-server/module/article.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] GET    /api/article/query_detail --> travel-server/module/article.InitRouter.WrapHandler[...].func2 (4 handlers)
+[GIN-debug] GET    /api/article/read         --> travel-server/module/article.InitRouter.WrapHandler[...].func3 (4 handlers)
+[GIN-debug] POST   /api/article/create       --> travel-server/module/article.InitRouter.WrapHandler[...].func4 (4 handlers)
+[GIN-debug] POST   /api/article/delete       --> travel-server/module/article.InitRouter.WrapHandler[...].func5 (4 handlers)
+[GIN-debug] POST   /api/article/update       --> travel-server/module/article.InitRouter.WrapHandler[...].func6 (4 handlers)
+[GIN-debug] GET    /api/category/query_list  --> travel-server/module/category.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] GET    /api/category/query_detail --> travel-server/module/category.InitRouter.WrapHandler[...].func2 (4 handlers)
+[GIN-debug] POST   /api/category/create      --> travel-server/module/category.InitRouter.WrapHandler[...].func3 (4 handlers)
+[GIN-debug] POST   /api/category/delete      --> travel-server/module/category.InitRouter.WrapHandler[...].func4 (4 handlers)
+[GIN-debug] POST   /api/category/update      --> travel-server/module/category.InitRouter.WrapHandler[...].func5 (4 handlers)
+[GIN-debug] GET    /api/tag/query_list       --> travel-server/module/tag.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] GET    /api/tag/query_detail     --> travel-server/module/tag.InitRouter.WrapHandler[...].func2 (4 handlers)
+[GIN-debug] POST   /api/tag/create           --> travel-server/module/tag.InitRouter.WrapHandler[...].func3 (4 handlers)
+[GIN-debug] POST   /api/tag/delete           --> travel-server/module/tag.InitRouter.WrapHandler[...].func4 (4 handlers)
+[GIN-debug] POST   /api/tag/update           --> travel-server/module/tag.InitRouter.WrapHandler[...].func5 (4 handlers)
+[GIN-debug] GET    /api/link/query_list      --> travel-server/module/link.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] POST   /api/link/create          --> travel-server/module/link.InitRouter.WrapHandler[...].func2 (4 handlers)
+[GIN-debug] POST   /api/link/delete          --> travel-server/module/link.InitRouter.WrapHandler[...].func3 (4 handlers)
+[GIN-debug] POST   /api/link/update          --> travel-server/module/link.InitRouter.WrapHandler[...].func4 (4 handlers)
+[GIN-debug] GET    /api/comment/query_list   --> travel-server/module/comment.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] GET    /api/comment/query_by_article --> travel-server/module/comment.InitRouter.WrapHandler[...].func2 (4 handlers)
+[GIN-debug] POST   /api/comment/create       --> travel-server/module/comment.InitRouter.WrapHandler[...].func3 (4 handlers)
+[GIN-debug] POST   /api/comment/delete       --> travel-server/module/comment.InitRouter.WrapHandler[...].func4 (4 handlers)
+[GIN-debug] POST   /api/comment/update       --> travel-server/module/comment.InitRouter.WrapHandler[...].func5 (4 handlers)
+[GIN-debug] GET    /api/theme/query_list     --> travel-server/module/theme.InitRouter.WrapHandler[...].func1 (4 handlers)
+[GIN-debug] POST   /api/theme/create         --> travel-server/module/theme.InitRouter.WrapHandler[...].func2 (4 handlers)
+[GIN-debug] POST   /api/theme/delete         --> travel-server/module/theme.InitRouter.WrapHandler[...].func3 (4 handlers)
+[GIN-debug] POST   /api/theme/update         --> travel-server/module/theme.InitRouter.WrapHandler[...].func4 (4 handlers)
+2024/04/10 00:08:20 travel-server start at: 127.0.0.1:8000
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on 127.0.0.1:8000

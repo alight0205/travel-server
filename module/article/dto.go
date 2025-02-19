@@ -10,3 +10,21 @@ type ListByAdminReq struct {
 	Title string `form:"title" json:"title"`
 	Tag   int    `form:"tag" json:"tag"`
 }
+
+type DetailReq struct {
+	ID int `form:"id" json:"id"`
+}
+
+type RemoveReq struct {
+	ID int `form:"id" json:"id"`
+}
+
+type ExamineReq struct {
+	ID            int `form:"id" json:"id"`
+	ExamineStatus int `form:"examine_status" json:"examine_status"`
+}
+
+type SetBannerReq struct {
+	ID       int `form:"id" json:"id"`
+	IsBanner int `form:"is_banner" json:"is_banner"`
+}

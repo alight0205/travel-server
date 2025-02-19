@@ -11,7 +11,7 @@ import (
 // @title travel-server API文档
 // @version 2.0
 // @description travel-server API文档
-// @host 127.0.0.1:2233
+// @host 127.0.0.1:8000
 // @BasePath /
 func main() {
 	// 读取配置文件

@@ -42,8 +42,9 @@ func listByAdmin(c *gin.Context, req ListByAdminReq) (data any, err error) {
 		query = query.
 			Where("article_tag.tag_id = ?", req.Tag)
 	}
-	query.Count(&total)
-	if err = query.Select("DISTINCT(article.id)", "article.*").Order("created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
+	global.DB.Model(&model.Article{}).Select("*").Count(&total)
+
+	if err = query.Select("DISTINCT(article.id)", "article.*").Order("article.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
 		return
 	}
 	data = map[string]any{
@@ -94,7 +95,7 @@ func removeByAdmin(c *gin.Context, req RemoveReq) (data any, err error) {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func examine(c *gin.Context, req ExamineReq) (data any, err error) {
-	if err = global.DB.Where("id = ?", req.ID).Update("examine_status", req.ExamineStatus).Error; err != nil {
+	if err = global.DB.Model(&model.Article{}).Where("id = ?", req.ID).Update("examine_status", req.ExamineStatus).Error; err != nil {
 		return
 	}
 	return
@@ -109,7 +110,7 @@ func examine(c *gin.Context, req ExamineReq) (data any, err error) {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func setBanner(c *gin.Context, req SetBannerReq) (data any, err error) {
-	if err = global.DB.Where("id = ?", req.ID).Update("is_banner", req.IsBanner).Error; err != nil {
+	if err = global.DB.Model(&model.Article{}).Where("id = ?", req.ID).Update("is_banner", req.IsBanner).Error; err != nil {
 		return
 	}
 	return

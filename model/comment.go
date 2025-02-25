@@ -18,11 +18,11 @@ type Comment struct {
 	Province  string    `gorm:"column:province;type:varchar(255)" json:"province"`
 	City      string    `gorm:"column:city;type:varchar(255)" json:"city"`
 	Examine   int       `gorm:"column:examine;type:tinyint;not null;default:1;comment:审核状态:0未通过1通过" json:"examine"` // 审核状态:0未通过1通过
+	CreatedAt time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 	ArticleID int       `gorm:"column:article_id;type:int" json:"article_id"`
 	CommentID int       `gorm:"column:comment_id;type:int" json:"comment_id"`
 	UserID    int       `gorm:"column:user_id;type:int" json:"user_id"`
-	CreatedAt time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 // TableName Comment's table name

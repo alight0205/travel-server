@@ -22,6 +22,6 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 		// 登录的用户
-		c.Set("userId", claims.UserId)
+		c.Set("user_id", claims.UserId)
 	}
 }

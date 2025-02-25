@@ -51,7 +51,7 @@ func loginByAccount(c *gin.Context, req LoginReq) (data any, err error) {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func getLoginInfo(c *gin.Context, _ any) (data any, err error) {
-	userId := c.GetInt("userId")
+	userId := c.GetInt("user_id")
 	user := &model.User{}
 	if err = global.DB.First(&user, userId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -13,7 +13,7 @@ import (
 // 鉴权用户是否是管理员
 func AdminAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userId := c.GetInt("userId")
+		userId := c.GetInt("user_id")
 		user := &model.User{}
 		if err := global.DB.First(&user, userId).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -42,7 +42,10 @@ func listByAdmin(c *gin.Context, req ListByAdminReq) (data any, err error) {
 		query = query.
 			Where("article_tag.tag_id = ?", req.Tag)
 	}
-	global.DB.Model(&model.Article{}).Select("*").Count(&total)
+
+	if err = query.Select("COUNT(DISTINCT article.id)").Count(&total).Error; err != nil {
+		return
+	}
 
 	if err = query.Select("DISTINCT(article.id)", "article.*").Order("article.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
 		return

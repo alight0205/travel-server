@@ -19,7 +19,7 @@ type Article struct {
 	Content       string    `gorm:"column:content;type:mediumtext" json:"content"`
 	ReadNum       int       `gorm:"column:read_num;type:mediumint;not null" json:"read_num"`
 	IsBanner      int       `gorm:"column:is_banner;type:tinyint;not null" json:"is_banner"`
-	UserID        int       `gorm:"column:user_id;type:int" json:"user_id"`
+	Creator        int       `gorm:"column:creator;type:int" json:"creator"`
 	ProvinceCode  int       `gorm:"column:province_code;type:int" json:"province_code"`
 	CityCode      int       `gorm:"column:city_code;type:int" json:"city_code"`
 	CreatedAt     time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`

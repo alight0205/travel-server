@@ -20,7 +20,7 @@ type Comment struct {
 	ExamineStatus int       `gorm:"column:examine_status;type:tinyint;not null;default:1;comment:审核状态:0未通过1通过" json:"examine_status"` // 审核状态:0未通过1通过
 	ArticleID     int       `gorm:"column:article_id;type:int" json:"article_id"`
 	CommentID     int       `gorm:"column:comment_id;type:int" json:"comment_id"`
-	UserID        int       `gorm:"column:user_id;type:int" json:"user_id"`
+	Creator        int       `gorm:"column:creator;type:int" json:"creator"`
 	CreatedAt     time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt     time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }

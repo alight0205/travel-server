@@ -2,7 +2,7 @@ package comment
 
 import "travel-server/model"
 
-type QueryListReq struct {
+type _QueryListReq struct {
 	model.PageInfo
 	UserId        int    `form:"user_id" json:"user_id"`
 	IP            string `form:"ip" json:"ip"`
@@ -27,11 +27,11 @@ type CreateReq struct {
 	CommentID int    `form:"comment_id" json:"comment_id"`
 }
 
-type DeleteReq struct {
+type _DeleteReq struct {
 	ID int `form:"id" json:"id"`
 }
 
-type ExamineReq struct {
+type _ExamineReq struct {
 	ID            int `form:"id" json:"id"`
 	ExamineStatus int `form:"examine_status" json:"examine_status"`
 }

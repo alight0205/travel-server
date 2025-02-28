@@ -10,24 +10,23 @@ import (
 )
 
 func InitRouter(r *gin.RouterGroup) {
-	g1 := r.Group("/admin/site", middleware.JWTAuth(), middleware.AdminAuth())
-
-	g1.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 查询评论列表
-	g1.POST("/create", utils.WrapHandler(create, &CreateReq{}))          // 创建景点
-	g1.POST("/update", utils.WrapHandler(update, nil))                   // 更新景点
-	g1.POST("/remove", utils.WrapHandler(remove, &RemoveReq{}))          // 管理员删除文章
+	_g := r.Group("/admin/site", middleware.JWTAuth(), middleware.AdminAuth())
+	_g.GET("/query_list", utils.WrapHandler(_queryList, &_QueryListReq{})) // 查询评论列表
+	_g.POST("/create", utils.WrapHandler(_create, &_CreateReq{}))          // 创建景点
+	_g.POST("/update", utils.WrapHandler(_update, nil))                    // 更新景点
+	_g.POST("/remove", utils.WrapHandler(_remove, &_RemoveReq{}))          // 管理员删除文章
 }
 
 // @Tags 景点管理
 // @Summary 查询景点列表
 // @Produce  application/json
-// @Param data query QueryListReq    true  "查询参数"
+// @Param data query _QueryListReq    true  "查询参数"
 // @Success 200 {object} res.Response{}
 // @Router /api/admin/site/query_list [get]
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
+func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 	var sites []model.Site
 	var total int64
 
@@ -64,12 +63,12 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 // @Tags 景点管理
 // @Summary 创建景点
 // @Produce  application/json
-// @Param data body CreateReq    true  "创建参数"
+// @Param data body _CreateReq    true  "创建参数"
 // @Router /api/admin/site/create [post]
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func create(c *gin.Context, req CreateReq) (data any, err error) {
+func _create(c *gin.Context, req _CreateReq) (data any, err error) {
 	site := model.Site{
 		Name:          req.Name,
 		ProvinceCode:  req.ProvinceCode,
@@ -92,7 +91,7 @@ func create(c *gin.Context, req CreateReq) (data any, err error) {
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func update(c *gin.Context, req map[string]any) (data any, err error) {
+func _update(c *gin.Context, req map[string]any) (data any, err error) {
 	id := int(req["id"].(float64))
 	utils.FilterProps(req, []string{"name", "province_code", "city_code", "address_detail", "images", "desc"})
 
@@ -105,12 +104,12 @@ func update(c *gin.Context, req map[string]any) (data any, err error) {
 // @Tags 景点管理
 // @Summary 删除景点
 // @Produce  application/json
-// @Param data body RemoveReq    true  "删除参数"
+// @Param data body _RemoveReq    true  "删除参数"
 // @Router /api/admin/site/remove [post]
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func remove(c *gin.Context, req RemoveReq) (data any, err error) {
+func _remove(c *gin.Context, req _RemoveReq) (data any, err error) {
 	if err = global.DB.Where("id = ?", req.ID).Delete(&model.Site{}).Error; err != nil {
 		return
 	}

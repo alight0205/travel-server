@@ -2,7 +2,7 @@ package user
 
 import "travel-server/model"
 
-type QueryListReq struct {
+type _QueryListReq struct {
 	model.PageInfo
 	ID       int    `form:"id" json:"id"`
 	UserName string `form:"name" json:"name"`

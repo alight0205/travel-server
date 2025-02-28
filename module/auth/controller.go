@@ -13,11 +13,8 @@ import (
 
 func InitRouter(r *gin.RouterGroup) {
 	g := r.Group("/auth")
-	{
-		g.POST("/login_by_account", utils.WrapHandler(loginByAccount, &LoginReq{}))          // 账号密码登录
-		g.GET("/get_login_info", middleware.JWTAuth(), utils.WrapHandler(getLoginInfo, nil)) // 获取当前用户信息
-
-	}
+	g.POST("/login_by_account", utils.WrapHandler(loginByAccount, &LoginReq{}))          // 账号密码登录
+	g.GET("/get_login_info", middleware.JWTAuth(), utils.WrapHandler(getLoginInfo, nil)) // 获取当前用户信息
 }
 
 // @Tags 鉴权

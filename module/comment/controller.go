@@ -10,25 +10,24 @@ import (
 )
 
 func InitRouter(r *gin.RouterGroup) {
-	g1 := r.Group("/admin/comment", middleware.JWTAuth(), middleware.AdminAuth())
-	g2 := r.Group("/user/comment", middleware.JWTAuth(), middleware.AdminAuth())
+	_g := r.Group("/admin/comment", middleware.JWTAuth(), middleware.AdminAuth())
+	_g.GET("/query_list", utils.WrapHandler(_queryList, &_QueryListReq{})) // 查询评论列表
+	_g.POST("/delete", utils.WrapHandler(_remove, &_DeleteReq{}))          // 删除评论
+	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))       // 管理员审核文章
 
-	g1.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 查询评论列表
-	g1.POST("/delete", utils.WrapHandler(remove, &DeleteReq{}))          // 删除评论
-	g1.POST("/examine", utils.WrapHandler(examine, &ExamineReq{}))       // 管理员审核文章
-
-	g2.POST("/create", utils.WrapHandler(create, &CreateReq{})) // 创建评论
+	g := r.Group("/user/comment", middleware.JWTAuth(), middleware.AdminAuth())
+	g.POST("/create", utils.WrapHandler(create, &CreateReq{})) // 创建评论
 }
 
 // @Tags 评论管理
 // @Summary 查询评论列表
 // @Description 查询评论列表
 // @Router /api/comment/query_list [get]
-// @Param data query QueryListReq    true  "查询参数"
+// @Param data query _QueryListReq    true  "查询参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
+func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 	var comments []model.Comment
 	var total int64
 	query := global.DB.Model(&model.Comment{})
@@ -83,7 +82,7 @@ func create(c *gin.Context, req CreateReq) (data any, err error) {
 	baiduMap := utils.GetIpLocation(ip)
 
 	comment := model.Comment{
-		UserID:    c.GetInt("user_id"),
+		Creator:   c.GetInt("user_id"),
 		Content:   req.Content,
 		ArticleID: req.ArticleID,
 		CommentID: req.CommentID,
@@ -101,11 +100,11 @@ func create(c *gin.Context, req CreateReq) (data any, err error) {
 // @Summary 删除评论
 // @Description 删除评论
 // @Router /api/comment/delete [post]
-// @Param data body DeleteReq    true  "删除参数"
+// @Param data body _DeleteReq    true  "删除参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func remove(c *gin.Context, req DeleteReq) (data any, err error) {
+func _remove(c *gin.Context, req _DeleteReq) (data any, err error) {
 	if err = global.DB.Where("id = ?", req.ID).Delete(&model.Comment{}).Error; err != nil {
 		return
 	}
@@ -116,11 +115,11 @@ func remove(c *gin.Context, req DeleteReq) (data any, err error) {
 // @Summary 管理员审核文章
 // @Description 管理员审核文章
 // @Router /api/admin/comment/examine [post]
-// @Param data body ExamineReq    true  "审核参数"
+// @Param data body _ExamineReq    true  "审核参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
-func examine(c *gin.Context, req ExamineReq) (data any, err error) {
+func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 	if err = global.DB.Model(&model.Comment{}).Where("id = ?", req.ID).Update("examine_status", req.ExamineStatus).Error; err != nil {
 		return
 	}

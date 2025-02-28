@@ -13,6 +13,7 @@ func InitRouter(r *gin.RouterGroup) {
 	g1 := r.Group("/admin/user", middleware.JWTAuth(), middleware.AdminAuth())
 
 	g1.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))
+	g1.POST("/update", utils.WrapHandler(update, nil))
 }
 
 // @Summary 用户列表
@@ -49,6 +50,24 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	data = map[string]any{
 		"list":  users,
 		"total": total,
+	}
+	return
+}
+
+// @Summary 更新用户
+// @Tags 用户管理
+// @Produce  application/json
+// @Param data body UpdateReq    true  "更新参数"
+// @Router /api/admin/user/update [post]
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func update(c *gin.Context, req map[string]any) (data any, err error) {
+	id := int(req["id"].(float64))
+	utils.FilterProps(req, []string{"status"})
+
+	if err = global.DB.Model(&model.Site{}).Where("id = ?", id).Updates(&req).Error; err != nil {
+		return
 	}
 	return
 }

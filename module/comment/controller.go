@@ -48,8 +48,8 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	if req.City != "" {
 		query = query.Where("city like ?", req.City)
 	}
-	if req.Examine != 0 {
-		query = query.Where("examine = ?", req.Examine)
+	if req.ExamineStatus != 0 {
+		query = query.Where("examine = ?", req.ExamineStatus)
 	}
 
 	query.Count(&total)

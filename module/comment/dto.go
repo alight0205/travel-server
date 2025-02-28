@@ -4,12 +4,12 @@ import "travel-server/model"
 
 type QueryListReq struct {
 	model.PageInfo
-	UserId   int    `form:"user_id" json:"user_id"`
-	IP       string `form:"ip" json:"ip"`
-	Content  string `form:"content" json:"content"`
-	Province string `form:"province" json:"province"`
-	City     string `form:"city" json:"city"`
-	Examine  int    `form:"examine" json:"examine"`
+	UserId        int    `form:"user_id" json:"user_id"`
+	IP            string `form:"ip" json:"ip"`
+	Content       string `form:"content" json:"content"`
+	Province      string `form:"province" json:"province"`
+	City          string `form:"city" json:"city"`
+	ExamineStatus int    `form:"examine_status" json:"examine_status"`
 }
 
 type QueryByArticleReq struct {

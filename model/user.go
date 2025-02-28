@@ -19,9 +19,10 @@ type User struct {
 	Avatar    string    `gorm:"column:avatar;type:varchar(255)" json:"avatar"`
 	Desc      string    `gorm:"column:desc;type:varchar(255)" json:"desc"`
 	Email     string    `gorm:"column:email;type:varchar(255)" json:"email"`
+	Role      int       `gorm:"column:role;type:int;default:2;comment:1管理员2普通用户" json:"role"`  // 1管理员2普通用户
+	Status    int       `gorm:"column:status;type:int;default:1;comment:1正常2封禁" json:"status"` // 1正常2封禁
 	CreatedAt time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Role      int       `gorm:"column:role;type:int;default:2;comment:1管理员2普通用户" json:"role"` // 1管理员2普通用户
 }
 
 // TableName User's table name

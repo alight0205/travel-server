@@ -23,3 +23,13 @@ type _CreateReq struct {
 type _RemoveReq struct {
 	ID int `form:"id" json:"id"`
 }
+
+type QueryListReq struct {
+	ProvinceCode  int    `form:"province_code" json:"province_code"`
+	CityCode      int    `form:"city_code" json:"city_code"`
+	AddressDetail string `form:"address_detail" json:"address_detail"`
+}
+
+type DetailReq struct {
+	ID int `form:"id" json:"id"`
+}

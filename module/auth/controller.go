@@ -13,8 +13,9 @@ import (
 
 func InitRouter(r *gin.RouterGroup) {
 	g := r.Group("/auth")
-	g.POST("/login_by_account", utils.WrapHandler(loginByAccount, &LoginReq{}))          // 账号密码登录
 	g.GET("/get_login_info", middleware.JWTAuth(), utils.WrapHandler(getLoginInfo, nil)) // 获取当前用户信息
+	g.POST("/login_by_account", utils.WrapHandler(loginByAccount, &LoginReq{}))          // 账号密码登录
+	g.POST("/register", utils.WrapHandler(register, &RegisterReq{}))                     // 注册
 }
 
 // @Tags 鉴权
@@ -59,6 +60,22 @@ func getLoginInfo(c *gin.Context, _ any) (data any, err error) {
 	}
 	data = map[string]any{
 		"user": user,
+	}
+	return
+}
+
+func register(c *gin.Context, req RegisterReq) (data any, err error) {
+	user := &model.User{
+		Username: req.Username,
+		Password: req.Password,
+	}
+	if err = global.DB.Where("username = ?", req.Username).First(&model.User{}).Error; err == nil {
+		err = errors.New("此用户已存在！")
+		return
+	}
+
+	if err = global.DB.Create(&user).Error; err != nil {
+		return
 	}
 	return
 }

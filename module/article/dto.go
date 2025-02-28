@@ -34,3 +34,20 @@ type QueryMyListReq struct {
 	Title string `form:"title" json:"title"`
 	Tag   int    `form:"tag" json:"tag"`
 }
+
+type QueryListReq struct {
+	model.PageInfo
+	ID      int    `form:"id" json:"id"`
+	Title   string `form:"title" json:"title"`
+	Tag     int    `form:"tag" json:"tag"`
+	Creator int    `form:"creator" json:"creator"`
+}
+
+type CreateReq struct {
+	Title   string `form:"title" json:"title" binding:"required"`
+	Content string `form:"content" json:"content" binding:"required"`
+	Tags    string `form:"tags" json:"tags" binding:"required"`
+	Images  string `form:"images" json:"images"`
+	Desc    string `form:"desc" json:"desc"`
+	TagIDs  string `form:"tag_ids" json:"tag_ids" binding:"required"`
+}

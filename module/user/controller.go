@@ -11,11 +11,12 @@ import (
 
 func InitRouter(r *gin.RouterGroup) {
 	_g := r.Group("/admin/user", middleware.JWTAuth(), middleware.AdminAuth())
-	_g.GET("/query_list", utils.WrapHandler(_queryList, &_QueryListReq{}))
-	_g.POST("/update", utils.WrapHandler(_update, nil))
+	_g.GET("/query_list", utils.WrapHandler(_queryList, &_QueryListReq{})) // 查询用户列表
+	_g.POST("/update", utils.WrapHandler(_update, nil))                    // 更新用户
 
 	g := r.Group("/user/user", middleware.JWTAuth())
-	g.POST("/update", utils.WrapHandler(update, nil))
+	g.POST("/detail", utils.WrapHandler(detail, &DetailReq{})) // 获取用户详情
+	g.POST("/update", utils.WrapHandler(update, nil))          // 更新用户
 }
 
 // @Summary 用户列表
@@ -66,7 +67,7 @@ func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 // @Success 200 {object} res.Response{}
 func _update(c *gin.Context, req map[string]any) (data any, err error) {
 	id := int(req["id"].(float64))
-	utils.FilterProps(req, []string{"status"})
+	utils.FilterProps(req, []string{"status", "role"})
 
 	if err = global.DB.Model(&model.Site{}).Where("id = ?", id).Updates(&req).Error; err != nil {
 		return
@@ -89,5 +90,14 @@ func update(c *gin.Context, req map[string]any) (data any, err error) {
 	if err = global.DB.Model(&model.Site{}).Where("id = ?", id).Updates(&req).Error; err != nil {
 		return
 	}
+	return
+}
+
+func detail(c *gin.Context, req DetailReq) (data any, err error) {
+	var user model.User
+	if err = global.DB.Select("id", "username", "nickname", "avatar", "desc", "email", "created_at").Where("id = ?", req.ID).First(&user).Error; err != nil {
+		return
+	}
+	data = user
 	return
 }

@@ -15,6 +15,10 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/create", utils.WrapHandler(_create, &_CreateReq{}))          // 创建景点
 	_g.POST("/update", utils.WrapHandler(_update, nil))                    // 更新景点
 	_g.POST("/remove", utils.WrapHandler(_remove, &_RemoveReq{}))          // 管理员删除文章
+
+	g := r.Group("/user/site", middleware.JWTAuth())
+	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 获取景点列表
+	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))           // 获取景点详情
 }
 
 // @Tags 景点管理
@@ -113,5 +117,52 @@ func _remove(c *gin.Context, req _RemoveReq) (data any, err error) {
 	if err = global.DB.Where("id = ?", req.ID).Delete(&model.Site{}).Error; err != nil {
 		return
 	}
+	return
+}
+
+// @Tags 景点管理
+// @Summary 查询景点列表
+// @Produce  application/json
+// @Param data query QueryListReq    true  "查询参数"
+// @Router /api/user/site/query_list [get]
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
+	var sites []model.Site
+
+	query := global.DB.Model(&model.Site{})
+
+	if req.ProvinceCode != 0 {
+		query = query.Where("province_code = ?", req.ProvinceCode)
+	}
+	if req.CityCode != 0 {
+		query = query.Where("city_code = ?", req.CityCode)
+	}
+	if req.AddressDetail != "" {
+		query = query.Where("address_detail like ?", "%"+req.AddressDetail+"%")
+	}
+
+	if err = query.Order("created_at desc").Find(&sites).Error; err != nil {
+		return
+	}
+	data = sites
+	return
+}
+
+// @Tags 景点管理
+// @Summary 查询景点详情
+// @Produce  application/json
+// @Param data query DetailReq    true  "查询参数"
+// @Router /api/user/site/detail [get]
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func detail(c *gin.Context, req DetailReq) (data any, err error) {
+	var site model.Site
+	if err = global.DB.Where("id = ?", req.ID).First(&site).Error; err != nil {
+		return
+	}
+	data = site
 	return
 }

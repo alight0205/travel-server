@@ -9,3 +9,7 @@ type _QueryListReq struct {
 	Nickname string `form:"nickname" json:"nickname"`
 	Role     int    `form:"role" json:"role"`
 }
+
+type DetailReq struct {
+	ID int `form:"id" json:"id"`
+}

@@ -16,7 +16,9 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))       // 管理员审核文章
 
 	g := r.Group("/user/comment", middleware.JWTAuth(), middleware.AdminAuth())
-	g.POST("/create", utils.WrapHandler(create, &CreateReq{})) // 创建评论
+	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 获取文章评论列表
+	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))          // 创建评论
+	g.POST("/remove", utils.WrapHandler(remove, &RemoveReq{}))          // 删除评论
 }
 
 // @Tags 评论管理
@@ -111,9 +113,9 @@ func _remove(c *gin.Context, req _DeleteReq) (data any, err error) {
 	return
 }
 
-// @Tags 文章管理
-// @Summary 管理员审核文章
-// @Description 管理员审核文章
+// @Tags 评论管理
+// @Summary 管理员审核评论
+// @Description 管理员审核评论
 // @Router /api/admin/comment/examine [post]
 // @Param data body _ExamineReq    true  "审核参数"
 // @Param Authorization header string true "Authorization"
@@ -121,6 +123,45 @@ func _remove(c *gin.Context, req _DeleteReq) (data any, err error) {
 // @Success 200 {object} res.Response{}
 func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 	if err = global.DB.Model(&model.Comment{}).Where("id = ?", req.ID).Update("examine_status", req.ExamineStatus).Error; err != nil {
+		return
+	}
+	return
+}
+
+// @Tags 评论管理
+// @Summary 查询评论列表
+// @Description 查询评论列表
+// @Router /api/user/comment/query_list [get]
+// @Param data query QueryListReq    true  "查询参数"
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
+	var comments []model.Comment
+	query := global.DB.Model(&model.Comment{})
+
+	query.Where("examine_status = 1")
+	if req.ArticleID != 0 {
+		query = query.Where("article_id = ?", req.ArticleID)
+	}
+
+	if err = query.Order("created_at desc").Find(&comments).Error; err != nil {
+		return
+	}
+	data = comments
+	return
+}
+
+// @Tags 评论管理
+// @Summary 删除评论
+// @Description 删除评论
+// @Router /api/user/comment/remove [post]
+// @Param data body RemoveReq    true  "删除参数"
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func remove(c *gin.Context, req RemoveReq) (data any, err error) {
+	if err = global.DB.Where("id = ?", req.ID).Delete(&model.Comment{}).Error; err != nil {
 		return
 	}
 	return

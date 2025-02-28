@@ -5,7 +5,10 @@ import (
 	"travel-server/middleware"
 	"travel-server/module/article"
 	"travel-server/module/auth"
+	"travel-server/module/comment"
 	"travel-server/module/common"
+	"travel-server/module/site"
+	"travel-server/module/user"
 
 	"github.com/gin-gonic/gin"
 
@@ -28,5 +31,8 @@ func InitRouter() *gin.Engine {
 	auth.InitRouter(api)
 	common.InitRouter(api)
 	article.InitRouter(api)
+	comment.InitRouter(api)
+	user.InitRouter(api)
+	site.InitRouter(api)
 	return router
 }

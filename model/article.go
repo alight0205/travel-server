@@ -26,6 +26,7 @@ type Article struct {
 	UpdatedAt     time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 	ExamineStatus int       `gorm:"column:examine_status;type:int;default:1;comment:1审核通过2审核不通过" json:"examine_status"` // 1审核通过2审核不通过
 	Tags          []Tag    `gorm:"many2many:article_tag" json:"tags"`
+	Comments      []Comment `gorm:"foreignKey:ArticleID" json:"comments"`
 }
 
 // TableName Article's table name

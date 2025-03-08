@@ -49,5 +49,10 @@ type CreateReq struct {
 	Tags    string `form:"tags" json:"tags" binding:"required"`
 	Images  string `form:"images" json:"images"`
 	Desc    string `form:"desc" json:"desc"`
+	Cover   string `form:"cover" json:"cover"`
 	TagIDs  string `form:"tag_ids" json:"tag_ids" binding:"required"`
+}
+
+type DetailReq struct {
+	ID int `form:"id" json:"id"`
 }

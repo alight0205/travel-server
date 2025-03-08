@@ -69,7 +69,7 @@ func _update(c *gin.Context, req map[string]any) (data any, err error) {
 	id := int(req["id"].(float64))
 	utils.FilterProps(req, []string{"status", "role"})
 
-	if err = global.DB.Model(&model.Site{}).Where("id = ?", id).Updates(&req).Error; err != nil {
+	if err = global.DB.Model(&model.User{}).Where("id = ?", id).Updates(&req).Error; err != nil {
 		return
 	}
 	return

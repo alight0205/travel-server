@@ -20,6 +20,7 @@ func InitRouter(r *gin.RouterGroup) {
 	g := r.Group("/user/article", middleware.JWTAuth())
 	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))        // 查询用户文章列表
 	g.GET("/query_my_list", utils.WrapHandler(queryMyList, &QueryMyListReq{})) // 查询我的文章列表
+	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))                  // 获取文章详情
 }
 
 // @Tags 文章管理
@@ -202,5 +203,22 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 		"list":  articles,
 		"total": total,
 	}
+	return
+}
+
+// @Tags 文章管理
+// @Summary 查询文章详情
+// @Description 查询文章详情
+// @Router /api/user/article/detail [get]
+// @Param data query DetailReq    true  "查询参数"
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func detail(c *gin.Context, req DetailReq) (data any, err error) {
+	var article model.Article
+	if err = global.DB.Where("id = ?", req.ID).Preload("Tags").First(&article).Error; err != nil {
+		return
+	}
+	data = article
 	return
 }

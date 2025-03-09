@@ -8,6 +8,7 @@ import (
 	"travel-server/module/comment"
 	"travel-server/module/common"
 	"travel-server/module/site"
+	"travel-server/module/tag"
 	"travel-server/module/user"
 
 	"github.com/gin-gonic/gin"
@@ -34,5 +35,6 @@ func InitRouter() *gin.Engine {
 	comment.InitRouter(api)
 	user.InitRouter(api)
 	site.InitRouter(api)
+	tag.InitRouter(api)
 	return router
 }

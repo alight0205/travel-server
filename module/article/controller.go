@@ -21,6 +21,7 @@ func InitRouter(r *gin.RouterGroup) {
 	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))        // 查询用户文章列表
 	g.GET("/query_my_list", utils.WrapHandler(queryMyList, &QueryMyListReq{})) // 查询我的文章列表
 	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))                  // 获取文章详情
+	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))                 // 创建文章
 }
 
 // @Tags 文章管理
@@ -220,5 +221,32 @@ func detail(c *gin.Context, req DetailReq) (data any, err error) {
 		return
 	}
 	data = article
+	return
+}
+
+// @Tags 文章管理
+// @Summary 创建文章
+// @Description 创建文章
+// @Router /api/user/article/create [post]
+// @Param data body CreateReq    true  "创建参数"
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func create(c *gin.Context, req CreateReq) (data any, err error) {
+	userId := c.GetInt("user_id")
+
+	article := model.Article{
+		Creator:      userId,
+		Title:        req.Title,
+		Desc:         req.Desc,
+		Content:      req.Content,
+		Cover:        req.Cover,
+		ProvinceCode: req.ProvinceCode,
+		CityCode:     req.CityCode,
+	}
+
+	if err = global.DB.Create(&article).Error; err != nil {
+		return
+	}
 	return
 }

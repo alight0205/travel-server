@@ -48,11 +48,11 @@ type DetailReq struct {
 }
 
 type CreateReq struct {
-	Title        string `form:"title" json:"title" binding:"required"`
-	Desc         string `form:"desc" json:"desc"`
-	Content      string `form:"content" json:"content" binding:"required"`
-	Cover        string `form:"cover" json:"cover"`
-	ProvinceCode int    `form:"province_code" json:"province_code"`
-	CityCode     int    `form:"city_code" json:"city_code"`
-	Tags         string `form:"tags" json:"tags"`
+	Title        string   `form:"title" json:"title" binding:"required"`
+	Desc         string   `form:"desc" json:"desc"`
+	Content      string   `form:"content" json:"content" binding:"required"`
+	Cover        string   `form:"cover" json:"cover"`
+	ProvinceCode int      `form:"province_code" json:"province_code"`
+	CityCode     int      `form:"city_code" json:"city_code"`
+	Tags         []string `form:"tags" json:"tags"`
 }

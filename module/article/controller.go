@@ -178,6 +178,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	var total int64
 	query := global.DB.Model(&model.Article{}).Preload("Tags").Joins(
 		"left join article_tag on article_tag.article_id = article.id",
+		"left join user on user.id = article.creator",
 	)
 	if req.ID != 0 {
 		query = query.Where("id = ?", req.ID)
@@ -197,7 +198,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 		return
 	}
 
-	if err = query.Select("DISTINCT(article.id)", "article.*").Order("article.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
+	if err = query.Select("DISTINCT(article.id)", "article.*", "user.nickname", "user.avatar").Order("article.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
 		return
 	}
 	data = map[string]any{
@@ -217,7 +218,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 // @Success 200 {object} res.Response{}
 func detail(c *gin.Context, req DetailReq) (data any, err error) {
 	var article model.Article
-	if err = global.DB.Where("id = ?", req.ID).Preload("Tags").First(&article).Error; err != nil {
+	if err = global.DB.Where("id = ?", req.ID).Preload("User").Preload("Tags").First(&article).Error; err != nil {
 		return
 	}
 	data = article

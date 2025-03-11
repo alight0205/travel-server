@@ -15,8 +15,8 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/update", utils.WrapHandler(_update, nil))                    // 更新用户
 
 	g := r.Group("/user/user", middleware.JWTAuth())
-	g.POST("/detail", utils.WrapHandler(detail, &DetailReq{})) // 获取用户详情
-	g.POST("/update", utils.WrapHandler(update, nil))          // 更新用户
+	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{})) // 获取用户详情
+	g.POST("/update", utils.WrapHandler(update, nil))         // 更新用户
 }
 
 // @Summary 用户列表

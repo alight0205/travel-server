@@ -16,7 +16,7 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))       // 管理员审核文章
 
 	g := r.Group("/user/comment", middleware.JWTAuth(), middleware.AdminAuth())
-	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))                              // 获取文章评论列表
+	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))                              // 获取我的评论列表
 	g.GET("/query_list_by_article", utils.WrapHandler(queryListByArticle, &QueryListByArticleReq{})) // 获取文章评论列表
 	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))                                       // 创建评论
 	g.POST("/remove", utils.WrapHandler(remove, &RemoveReq{}))                                       // 删除评论

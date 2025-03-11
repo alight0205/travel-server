@@ -22,6 +22,11 @@ type _ExamineReq struct {
 }
 
 type QueryListReq struct {
+	model.PageInfo
+	UserId int `form:"user_id" json:"user_id"`
+}
+
+type QueryListByArticleReq struct {
 	ArticleID int `form:"article_id" json:"article_id"`
 }
 

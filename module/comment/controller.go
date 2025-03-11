@@ -16,9 +16,10 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))       // 管理员审核文章
 
 	g := r.Group("/user/comment", middleware.JWTAuth(), middleware.AdminAuth())
-	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 获取文章评论列表
-	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))          // 创建评论
-	g.POST("/remove", utils.WrapHandler(remove, &RemoveReq{}))          // 删除评论
+	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))                              // 获取文章评论列表
+	g.GET("/query_list_by_article", utils.WrapHandler(queryListByArticle, &QueryListByArticleReq{})) // 获取文章评论列表
+	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))                                       // 创建评论
+	g.POST("/remove", utils.WrapHandler(remove, &RemoveReq{}))                                       // 删除评论
 }
 
 // @Tags 评论管理
@@ -137,6 +138,36 @@ func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
+	var comments []model.Comment
+	var total int64
+	query := global.DB.Model(&model.Comment{})
+
+	if req.UserId != 0 {
+		query = query.Where("user_id = ?", req.UserId)
+	}
+
+	query.Count(&total)
+
+	if err = query.Order("created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&comments).Error; err != nil {
+		return
+	}
+
+	data = map[string]any{
+		"list":  comments,
+		"total": total,
+	}
+	return
+}
+
+// @Tags 评论管理
+// @Summary 查询文章评论列表
+// @Description 查询文章评论列表
+// @Router /api/user/comment/query_list_by_article [get]
+// @Param data query QueryListReq    true  "查询参数"
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func queryListByArticle(c *gin.Context, req QueryListByArticleReq) (data any, err error) {
 	var comments []model.Comment
 	query := global.DB.Model(&model.Comment{})
 

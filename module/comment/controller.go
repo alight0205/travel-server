@@ -143,12 +143,12 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	query := global.DB.Select("comment.*", "article.title", "user.nickname", "user.avatar").Table("comment").Joins("left join article on comment.article_id = article.id").Joins("left join user on comment.creator = user.id")
 
 	if req.Creator != 0 {
-		query = query.Where("creator = ?", req.Creator)
+		query = query.Where("comment.creator = ?", req.Creator)
 	}
 
 	query.Count(&total)
 
-	if err = query.Order("created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&results).Error; err != nil {
+	if err = query.Order("comment.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&results).Error; err != nil {
 		return
 	}
 

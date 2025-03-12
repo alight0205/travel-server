@@ -218,7 +218,9 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 // @Success 200 {object} res.Response{}
 func detail(c *gin.Context, req DetailReq) (data any, err error) {
 	var article model.Article
-	if err = global.DB.Where("id = ?", req.ID).Preload("User").Preload("Tags").First(&article).Error; err != nil {
+	if err = global.DB.Where("id = ?", req.ID).Preload("User", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "nickname", "avatar") // 只选择需要的字段
+	}).Preload("Tags").First(&article).Error; err != nil {
 		return
 	}
 	data = article

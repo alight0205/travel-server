@@ -138,9 +138,9 @@ func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
-	var comments []model.Comment
+	var results []map[string]any
 	var total int64
-	query := global.DB.Model(&model.Comment{}).Preload("User")
+	query := global.DB.Select("comment.*", "article.title", "user.nickname", "user.avatar").Table("comment").Joins("left join article on comment.article_id = article.id").Joins("left join user on comment.creator = user.id")
 
 	if req.Creator != 0 {
 		query = query.Where("creator = ?", req.Creator)
@@ -148,12 +148,12 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 
 	query.Count(&total)
 
-	if err = query.Order("created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&comments).Error; err != nil {
+	if err = query.Order("created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&results).Error; err != nil {
 		return
 	}
 
 	data = map[string]any{
-		"list":  comments,
+		"list":  results,
 		"total": total,
 	}
 	return
@@ -168,18 +168,18 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 // @Produce json
 // @Success 200 {object} res.Response{}
 func queryListByArticle(c *gin.Context, req QueryListByArticleReq) (data any, err error) {
-	var comments []model.Comment
-	query := global.DB.Model(&model.Comment{}).Preload("User").Preload("Article")
+	var results []map[string]interface{}
+	query := global.DB.Select("comment.*", "article.title", "user.nickname", "user.avatar").Table("comment").Joins("left join article on comment.article_id = article.id").Joins("left join user on comment.creator = user.id")
 
-	query.Where("examine_status = 1")
+	query.Where("comment.examine_status = 1")
 	if req.ArticleID != 0 {
-		query = query.Where("article_id = ?", req.ArticleID)
+		query = query.Where("comment.article_id = ?", req.ArticleID)
 	}
 
-	if err = query.Order("created_at desc").Find(&comments).Error; err != nil {
+	if err = query.Order("comment.created_at desc").Find(&results).Error; err != nil {
 		return
 	}
-	data = comments
+	data = results
 	return
 }
 

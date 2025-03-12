@@ -140,7 +140,7 @@ func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	var comments []model.Comment
 	var total int64
-	query := global.DB.Model(&model.Comment{})
+	query := global.DB.Model(&model.Comment{}).Preload("User")
 
 	if req.UserId != 0 {
 		query = query.Where("user_id = ?", req.UserId)
@@ -169,7 +169,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 // @Success 200 {object} res.Response{}
 func queryListByArticle(c *gin.Context, req QueryListByArticleReq) (data any, err error) {
 	var comments []model.Comment
-	query := global.DB.Model(&model.Comment{})
+	query := global.DB.Model(&model.Comment{}).Preload("User")
 
 	query.Where("examine_status = 1")
 	if req.ArticleID != 0 {

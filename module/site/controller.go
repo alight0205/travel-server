@@ -90,7 +90,7 @@ func _create(c *gin.Context, req _CreateReq) (data any, err error) {
 // @Tags 景点管理
 // @Summary 更新景点
 // @Produce  application/json
-// @Param data body UpdateReq    true  "更新参数"
+// @Param data body map[string]any    true  "更新参数"
 // @Router /api/admin/site/update [post]
 // @Param Authorization header string true "Authorization"
 // @Produce json

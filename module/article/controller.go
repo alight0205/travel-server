@@ -7,6 +7,7 @@ import (
 	"travel-server/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func InitRouter(r *gin.RouterGroup) {
@@ -28,7 +29,7 @@ func InitRouter(r *gin.RouterGroup) {
 // @Summary 管理员查询文章列表
 // @Description 管理员查询文章列表
 // @Router /api/admin/article/query_list [get]
-// @Param data query ListByAdminReq    true  "查询参数"
+// @Param data query _QueryListReq    true  "查询参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
@@ -84,7 +85,7 @@ func _detail(c *gin.Context, req _DetailReq) (data any, err error) {
 // @Summary 管理员删除文章
 // @Description 管理员删除文章
 // @Router /api/admin/article/remove [post]
-// @Param data body RemoveReq    true  "删除参数"
+// @Param data body _RemoveReq    true  "删除参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
@@ -99,7 +100,7 @@ func _remove(c *gin.Context, req _RemoveReq) (data any, err error) {
 // @Summary 管理员审核文章
 // @Description 管理员审核文章
 // @Router /api/admin/article/examine [post]
-// @Param data body ExamineReq    true  "审核参数"
+// @Param data body _ExamineReq    true  "审核参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
@@ -114,7 +115,7 @@ func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 // @Summary 管理员设置banner
 // @Description 管理员设置banner
 // @Router /api/admin/article/set_banner [post]
-// @Param data body SetBannerReq    true  "设置参数"
+// @Param data body _SetBannerReq    true  "设置参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
@@ -129,7 +130,7 @@ func _setBanner(c *gin.Context, req _SetBannerReq) (data any, err error) {
 // @Summary 查询我的文章列表
 // @Description 查询文章列表
 // @Router /api/user/article/query_my_list [get]
-// @Param data query ListByAdminReq    true  "查询参数"
+// @Param data query QueryMyListReq    true  "查询参数"
 // @Produce json
 // @Success 200 {object} res.Response{}
 func queryMyList(c *gin.Context, req QueryMyListReq) (data any, err error) {
@@ -169,17 +170,16 @@ func queryMyList(c *gin.Context, req QueryMyListReq) (data any, err error) {
 // @Summary 查询文章列表
 // @Description 查询文章列表
 // @Router /api/user/article/query_list [get]
-// @Param data query ListByAdminReq    true  "查询参数"
+// @Param data query QueryListReq    true  "查询参数"
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}
 func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	var articles []model.Article
 	var total int64
-	query := global.DB.Model(&model.Article{}).Preload("Tags").Joins(
-		"left join article_tag on article_tag.article_id = article.id",
-		"left join user on user.id = article.creator",
-	)
+	query := global.DB.Model(&model.Article{}).Preload("Tags").Preload("User", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "nickname", "avatar") // 只选择需要的字段
+	})
 	if req.ID != 0 {
 		query = query.Where("id = ?", req.ID)
 	}
@@ -198,7 +198,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 		return
 	}
 
-	if err = query.Select("DISTINCT(article.id)", "article.*", "user.nickname", "user.avatar").Order("article.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
+	if err = query.Select("article.*").Order("article.created_at desc").Limit(req.PageSize).Offset((req.PageNum - 1) * req.PageSize).Find(&articles).Error; err != nil {
 		return
 	}
 	data = map[string]any{

@@ -6,6 +6,8 @@ import (
 	"travel-server/flags"
 	"travel-server/global"
 	"travel-server/routers"
+
+	_ "travel-server/docs" // swagger docs
 )
 
 // @title travel-server API文档

@@ -26,7 +26,7 @@ func InitRouter(r *gin.RouterGroup) {
 // @Router /api/admin/user/query_list [get]
 // @Param Authorization header string true "Authorization"
 // @Produce json
-// @Success 200 {object} res.Response{}]
+// @Success 200 {object} res.Response{}
 func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 	var users []model.User
 	var total int64
@@ -60,7 +60,7 @@ func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 // @Summary 管理员更新用户
 // @Tags 用户管理
 // @Produce  application/json
-// @Param data body UpdateReq    true  "更新参数"
+// @Param data body map[string]any    true  "更新参数"
 // @Router /api/admin/user/update [post]
 // @Param Authorization header string true "Authorization"
 // @Produce json
@@ -78,8 +78,8 @@ func _update(c *gin.Context, req map[string]any) (data any, err error) {
 // @Summary 更新用户
 // @Tags 用户管理
 // @Produce  application/json
-// @Param data body UpdateReq    true  "更新参数"
-// @Router /api/admin/user/update [post]
+// @Param data body map[string]any    true  "更新参数"
+// @Router /api/user/user/update [post]
 // @Param Authorization header string true "Authorization"
 // @Produce json
 // @Success 200 {object} res.Response{}

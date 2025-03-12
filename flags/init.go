@@ -18,8 +18,6 @@ type Option struct {
 
 func Parse() (option *Option) {
 	option = new(Option)
-	flag.StringVar(&option.User, "u", "", "创建用户")
-	flag.BoolVar(&option.API, "api", false, "初始化api")
 	flag.StringVar(&option.Load, "load", "", "导入数据库文件")
 	flag.BoolVar(&option.Dump, "dump", false, "导出数据库")
 	flag.StringVar(&option.Model, "model", "", "初始化models")

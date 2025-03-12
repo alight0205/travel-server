@@ -169,7 +169,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 // @Success 200 {object} res.Response{}
 func queryListByArticle(c *gin.Context, req QueryListByArticleReq) (data any, err error) {
 	var comments []model.Comment
-	query := global.DB.Model(&model.Comment{}).Preload("User")
+	query := global.DB.Model(&model.Comment{}).Preload("User").Preload("Article")
 
 	query.Where("examine_status = 1")
 	if req.ArticleID != 0 {

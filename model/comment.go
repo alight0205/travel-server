@@ -24,6 +24,7 @@ type Comment struct {
 	CreatedAt     time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt     time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 	User          User     `gorm:"foreignKey:Creator" json:"user"`
+	Article       Article  `gorm:"foreignKey:ArticleID" json:"article"`
 }
 
 // TableName Comment's table name

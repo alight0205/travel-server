@@ -4,7 +4,7 @@ import "travel-server/model"
 
 type _QueryListReq struct {
 	model.PageInfo
-	UserId        int    `form:"user_id" json:"user_id"`
+	Creator       int    `form:"creator" json:"creator"`
 	IP            string `form:"ip" json:"ip"`
 	Content       string `form:"content" json:"content"`
 	Province      string `form:"province" json:"province"`
@@ -23,7 +23,7 @@ type _ExamineReq struct {
 
 type QueryListReq struct {
 	model.PageInfo
-	UserId int `form:"user_id" json:"user_id"`
+	Creator int `form:"creator" json:"creator"`
 }
 
 type QueryListByArticleReq struct {

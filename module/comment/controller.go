@@ -35,8 +35,8 @@ func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 	var total int64
 	query := global.DB.Model(&model.Comment{})
 
-	if req.UserId != 0 {
-		query = query.Where("user_id = ?", req.UserId)
+	if req.Creator != 0 {
+		query = query.Where("creator = ?", req.Creator)
 	}
 	if req.IP != "" {
 		query = query.Where("ip = ?", req.IP)
@@ -142,8 +142,8 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	var total int64
 	query := global.DB.Model(&model.Comment{}).Preload("User")
 
-	if req.UserId != 0 {
-		query = query.Where("user_id = ?", req.UserId)
+	if req.Creator != 0 {
+		query = query.Where("creator = ?", req.Creator)
 	}
 
 	query.Count(&total)

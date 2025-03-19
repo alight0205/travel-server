@@ -15,7 +15,7 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/delete", utils.WrapHandler(_remove, &_DeleteReq{}))          // 删除评论
 	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))       // 管理员审核文章
 
-	g := r.Group("/user/comment", middleware.JWTAuth(), middleware.AdminAuth())
+	g := r.Group("/user/comment", middleware.JWTAuth())
 	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))                              // 获取我的评论列表
 	g.GET("/query_list_by_article", utils.WrapHandler(queryListByArticle, &QueryListByArticleReq{})) // 获取文章评论列表
 	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))                                       // 创建评论
@@ -140,7 +140,10 @@ func _examine(c *gin.Context, req _ExamineReq) (data any, err error) {
 func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	var results []map[string]any
 	var total int64
-	query := global.DB.Select("comment.*", "article.title", "user.nickname", "user.avatar").Table("comment").Joins("left join article on comment.article_id = article.id").Joins("left join user on comment.creator = user.id")
+	query := global.DB.Select("comment.*", "article.title", "user.nickname", "user.avatar").
+		Table("comment").
+		Joins("left join article on comment.article_id = article.id").
+		Joins("left join user on comment.creator = user.id")
 
 	if req.Creator != 0 {
 		query = query.Where("comment.creator = ?", req.Creator)

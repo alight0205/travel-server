@@ -6,9 +6,10 @@ import (
 
 type _QueryListReq struct {
 	model.PageInfo
-	ID    int    `form:"id" json:"id"`
-	Title string `form:"title" json:"title"`
-	Tag   int    `form:"tag" json:"tag"`
+	ID      int    `form:"id" json:"id"`
+	Title   string `form:"title" json:"title"`
+	Tag     int    `form:"tag" json:"tag"`
+	Creator int    `form:"creator" json:"creator"`
 }
 
 type _DetailReq struct {

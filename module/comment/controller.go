@@ -44,14 +44,11 @@ func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 	if req.Content != "" {
 		query = query.Where("content like ?", "%"+req.Content+"%")
 	}
-	if req.Province != "" {
-		query = query.Where("province like ?", req.Province)
-	}
-	if req.City != "" {
-		query = query.Where("city like ?", req.City)
-	}
 	if req.ExamineStatus != 0 {
 		query = query.Where("examine = ?", req.ExamineStatus)
+	}
+	if req.ArticleID != 0 {
+		query = query.Where("article_id = ?", req.ArticleID)
 	}
 
 	query.Count(&total)

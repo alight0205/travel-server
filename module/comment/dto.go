@@ -7,8 +7,7 @@ type _QueryListReq struct {
 	Creator       int    `form:"creator" json:"creator"`
 	IP            string `form:"ip" json:"ip"`
 	Content       string `form:"content" json:"content"`
-	Province      string `form:"province" json:"province"`
-	City          string `form:"city" json:"city"`
+	ArticleID     int    `form:"article_id" json:"article_id"`
 	ExamineStatus int    `form:"examine_status" json:"examine_status"`
 }
 

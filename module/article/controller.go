@@ -45,12 +45,19 @@ func _queryList(c *gin.Context, req _QueryListReq) (data any, err error) {
 	if req.ID != 0 {
 		query = query.Where("id = ?", req.ID)
 	}
-	if req.Title != "" {
-		query = query.Where("title like ?", "%"+req.Title+"%")
+	if req.Creator != 0 {
+		query = query.Where("creator = ?", req.Creator)
 	}
-	if req.Tag != 0 {
-		query = query.
-			Where("article_tag.tag_id = ?", req.Tag)
+	if req.Title != "" {
+		titlePattern := "%" + req.Title + "%"
+		// 子查询：存在关联标签名称匹配
+		tagSubQuery := global.DB.Model(&model.Tag{}).
+			Select("1").
+			Joins("INNER JOIN article_tag ON article_tag.tag_id = tag.id").
+			Where("article_tag.article_id = article.id").
+			Where("tag.name LIKE ?", titlePattern)
+
+		query = query.Where("(title LIKE ?) OR EXISTS (?)", titlePattern, tagSubQuery)
 	}
 
 	if err = query.Select("COUNT(DISTINCT article.id)").Count(&total).Error; err != nil {

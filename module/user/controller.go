@@ -17,8 +17,8 @@ func InitRouter(r *gin.RouterGroup) {
 
 	g := r.Group("/user/user")
 	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))               // 获取用户详情
-	g.POST("/update", middleware.JWTAuth(), utils.WrapHandler(update, nil)) // 更新用户
 	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))              // 创建用户
+	g.POST("/update", middleware.JWTAuth(), utils.WrapHandler(update, nil)) // 更新用户
 }
 
 // @Summary 用户列表

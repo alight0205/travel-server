@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"travel-server/global"
 	"travel-server/middleware"
 	"travel-server/model"
@@ -17,6 +18,7 @@ func InitRouter(r *gin.RouterGroup) {
 	g := r.Group("/user/user")
 	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))               // 获取用户详情
 	g.POST("/update", middleware.JWTAuth(), utils.WrapHandler(update, nil)) // 更新用户
+	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))              // 创建用户
 }
 
 // @Summary 用户列表
@@ -99,5 +101,25 @@ func detail(c *gin.Context, req DetailReq) (data any, err error) {
 		return
 	}
 	data = user
+	return
+}
+
+func create(c *gin.Context, req CreateReq) (data any, err error) {
+	var user model.User
+
+	if err = global.DB.Where("username = ?", req.UserName).First(&user).Error; err == nil {
+		err = errors.New("此用户已存在！")
+		return
+	}
+
+	user = model.User{
+		Username: req.UserName,
+		Password: req.Password,
+	}
+
+	if err = global.DB.Create(&user).Error; err != nil {
+		return
+	}
+
 	return
 }

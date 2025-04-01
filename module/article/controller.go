@@ -1,6 +1,7 @@
 package article
 
 import (
+	"errors"
 	"travel-server/global"
 	"travel-server/middleware"
 	"travel-server/model"
@@ -18,11 +19,11 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))        // 管理员审核文章
 	_g.POST("/set_banner", utils.WrapHandler(_setBanner, &_SetBannerReq{})) // 管理员设置banner
 
-	g := r.Group("/user/article", middleware.JWTAuth())
-	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))        // 查询用户文章列表
-	g.GET("/query_my_list", utils.WrapHandler(queryMyList, &QueryMyListReq{})) // 查询我的文章列表
-	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))                  // 获取文章详情
-	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))                 // 创建文章
+	g := r.Group("/user/article")
+	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))                              // 查询用户文章列表
+	g.GET("/query_my_list", middleware.JWTAuth(), utils.WrapHandler(queryMyList, &QueryMyListReq{})) // 查询我的文章列表
+	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))                                        // 获取文章详情
+	g.POST("/create", middleware.JWTAuth(), utils.WrapHandler(create, &CreateReq{}))                 // 创建文章
 }
 
 // @Tags 文章管理
@@ -183,18 +184,23 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	if req.ID != 0 {
 		query = query.Where("id = ?", req.ID)
 	}
-	if req.Title != "" {
-		query = query.Where("title like ?", "%"+req.Title+"%")
-	}
-	if req.Tag != 0 {
-		query = query.
-			Where("article_tag.tag_id = ?", req.Tag)
-	}
 	if req.Creator != 0 {
 		query = query.Where("creator = ?", req.Creator)
 	}
 	if req.IsBanner != 0 {
 		query = query.Where("is_banner = ?", req.IsBanner)
+	}
+
+	if req.Title != "" {
+		titlePattern := "%" + req.Title + "%"
+		// 子查询：存在关联标签名称匹配
+		tagSubQuery := global.DB.Model(&model.Tag{}).
+			Select("1").
+			Joins("INNER JOIN article_tag ON article_tag.tag_id = tag.id").
+			Where("article_tag.article_id = article.id").
+			Where("tag.name LIKE ?", titlePattern)
+
+		query = query.Where("(title LIKE ?) OR EXISTS (?)", titlePattern, tagSubQuery)
 	}
 
 	if err = query.Select("COUNT(DISTINCT article.id)").Count(&total).Error; err != nil {
@@ -222,7 +228,7 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 func detail(c *gin.Context, req DetailReq) (data any, err error) {
 	var article model.Article
 	if err = global.DB.Where("id = ?", req.ID).Preload("User", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id", "nickname", "avatar") // 只选择需要的字段
+		return db.Select("id", "nickname", "avatar", "desc", "email") // 只选择需要的字段
 	}).Preload("Tags").First(&article).Error; err != nil {
 		return
 	}
@@ -241,6 +247,36 @@ func detail(c *gin.Context, req DetailReq) (data any, err error) {
 func create(c *gin.Context, req CreateReq) (data any, err error) {
 	userId := c.GetInt("user_id")
 
+	// 开启事务
+	tx := global.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil || err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// 处理标签
+	var tags []model.Tag
+	for _, tagName := range req.Tags {
+		var tag model.Tag
+		// 尝试查询现有标签（假设标签名唯一）
+		if err = tx.Where("name = ?", tagName).First(&tag).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				// 创建新标签
+				tag = model.Tag{Name: tagName}
+				if err = tx.Create(&tag).Error; err != nil {
+					tx.Rollback()
+					return
+				}
+			} else {
+				tx.Rollback()
+				return
+			}
+		}
+		tags = append(tags, tag)
+	}
+
+	// 创建文章
 	article := model.Article{
 		Creator:      userId,
 		Title:        req.Title,
@@ -250,9 +286,20 @@ func create(c *gin.Context, req CreateReq) (data any, err error) {
 		ProvinceCode: req.ProvinceCode,
 		CityCode:     req.CityCode,
 	}
-
-	if err = global.DB.Create(&article).Error; err != nil {
+	if err = tx.Create(&article).Error; err != nil {
+		tx.Rollback()
 		return
 	}
-	return
+
+	// 关联标签
+	if len(tags) > 0 {
+		if err = tx.Model(&article).Association("Tags").Append(tags); err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+
+	// 提交事务
+	tx.Commit()
+	return article, nil
 }

@@ -16,7 +16,7 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/update", utils.WrapHandler(_update, nil))                    // 更新景点
 	_g.POST("/remove", utils.WrapHandler(_remove, &_RemoveReq{}))          // 管理员删除文章
 
-	g := r.Group("/user/site", middleware.JWTAuth())
+	g := r.Group("/user/site")
 	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 获取景点列表
 	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))           // 获取景点详情
 }

@@ -14,9 +14,9 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.GET("/query_list", utils.WrapHandler(_queryList, &_QueryListReq{})) // 查询用户列表
 	_g.POST("/update", utils.WrapHandler(_update, nil))                    // 更新用户
 
-	g := r.Group("/user/user", middleware.JWTAuth())
-	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{})) // 获取用户详情
-	g.POST("/update", utils.WrapHandler(update, nil))         // 更新用户
+	g := r.Group("/user/user")
+	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))               // 获取用户详情
+	g.POST("/update", middleware.JWTAuth(), utils.WrapHandler(update, nil)) // 更新用户
 }
 
 // @Summary 用户列表

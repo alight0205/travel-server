@@ -15,11 +15,11 @@ func InitRouter(r *gin.RouterGroup) {
 	_g.POST("/delete", utils.WrapHandler(_remove, &_DeleteReq{}))          // 删除评论
 	_g.POST("/examine", utils.WrapHandler(_examine, &_ExamineReq{}))       // 管理员审核文章
 
-	g := r.Group("/user/comment", middleware.JWTAuth())
-	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{}))                              // 获取我的评论列表
+	g := r.Group("/user/comment")
+	g.GET("/query_list", middleware.JWTAuth(), utils.WrapHandler(queryList, &QueryListReq{}))        // 获取我的评论列表
 	g.GET("/query_list_by_article", utils.WrapHandler(queryListByArticle, &QueryListByArticleReq{})) // 获取文章评论列表
-	g.POST("/create", utils.WrapHandler(create, &CreateReq{}))                                       // 创建评论
-	g.POST("/remove", utils.WrapHandler(remove, &RemoveReq{}))                                       // 删除评论
+	g.POST("/create", middleware.JWTAuth(), utils.WrapHandler(create, &CreateReq{}))                 // 创建评论
+	g.POST("/remove", middleware.JWTAuth(), utils.WrapHandler(remove, &RemoveReq{}))                 // 删除评论
 }
 
 // @Tags 评论管理
@@ -79,7 +79,7 @@ func create(c *gin.Context, req CreateReq) (data any, err error) {
 	// 获取客户端IP地址
 	ip := c.ClientIP()
 	if ip == "127.0.0.1" || ip == "::1" {
-		ip = "182.150.30.50"
+		ip = "113.128.90.161"
 	}
 	// 获取ip所在城市
 	baiduMap := utils.GetIpLocation(ip)

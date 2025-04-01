@@ -39,7 +39,6 @@ type QueryListReq struct {
 	model.PageInfo
 	ID       int    `form:"id" json:"id"`
 	Title    string `form:"title" json:"title"`
-	Tag      int    `form:"tag" json:"tag"`
 	Creator  int    `form:"creator" json:"creator"`
 	IsBanner int    `form:"is_banner" json:"is_banner"`
 }

@@ -56,3 +56,6 @@ type CreateReq struct {
 	CityCode     int      `form:"city_code" json:"city_code"`
 	Tags         []string `form:"tags" json:"tags"`
 }
+type RemoveReq struct {
+	ID int `form:"id" json:"id"`
+}

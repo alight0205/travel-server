@@ -24,6 +24,8 @@ func InitRouter(r *gin.RouterGroup) {
 	g.GET("/query_my_list", middleware.JWTAuth(), utils.WrapHandler(queryMyList, &QueryMyListReq{})) // 查询我的文章列表
 	g.GET("/detail", utils.WrapHandler(detail, &DetailReq{}))                                        // 获取文章详情
 	g.POST("/create", middleware.JWTAuth(), utils.WrapHandler(create, &CreateReq{}))                 // 创建文章
+	g.POST("/update", middleware.JWTAuth(), utils.WrapHandler(update, nil))                          // 更新文章
+	g.POST("/remove", middleware.JWTAuth(), utils.WrapHandler(remove, &RemoveReq{}))                 // 删除文章
 }
 
 // @Tags 文章管理
@@ -302,4 +304,31 @@ func create(c *gin.Context, req CreateReq) (data any, err error) {
 	// 提交事务
 	tx.Commit()
 	return article, nil
+}
+
+// @Tags 文章管理
+// @Summary 更新文章
+// @Description 更新文章
+// @Router /api/user/article/update [post]
+// @Param data body UpdateReq    true  "更新参数"
+// @Param Authorization header string true "Authorization"
+// @Produce json
+// @Success 200 {object} res.Response{}
+func update(c *gin.Context, req map[string]any) (data any, err error) {
+	id := int(req["id"].(float64))
+	utils.FilterProps(req, []string{"province_code", "city_code", "content", "title", "cover", "desc"})
+
+	if err = global.DB.Model(&model.Article{}).Where("id = ?", id).Updates(&req).Error; err != nil {
+		return
+	}
+	return
+}
+
+func remove(c *gin.Context, req RemoveReq) (data any, err error) {
+	userId := c.GetInt("user_id")
+
+	if err = global.DB.Where("id = ?", req.ID).Where("creator = ?", userId).Delete(&model.Article{}).Error; err != nil {
+		return
+	}
+	return
 }

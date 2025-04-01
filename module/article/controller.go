@@ -193,6 +193,9 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	if req.Creator != 0 {
 		query = query.Where("creator = ?", req.Creator)
 	}
+	if req.IsBanner != 0 {
+		query = query.Where("is_banner = ?", req.IsBanner)
+	}
 
 	if err = query.Select("COUNT(DISTINCT article.id)").Count(&total).Error; err != nil {
 		return

@@ -10,7 +10,7 @@ import (
 )
 
 func InitRouter(r *gin.RouterGroup) {
-	g := r.Group("/user/tag", middleware.JWTAuth(), middleware.AdminAuth())
+	g := r.Group("/user/tag", middleware.JWTAuth())
 	g.GET("/query_list", utils.WrapHandler(queryList, &QueryListReq{})) // 获取标签列表
 }
 

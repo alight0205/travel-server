@@ -190,6 +190,8 @@ func queryList(c *gin.Context, req QueryListReq) (data any, err error) {
 	query := global.DB.Model(&model.Article{}).Preload("Tags").Preload("User", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id", "nickname", "avatar") // 只选择需要的字段
 	})
+
+	query.Where("examine_status = 1")
 	if req.ID != 0 {
 		query = query.Where("id = ?", req.ID)
 	}

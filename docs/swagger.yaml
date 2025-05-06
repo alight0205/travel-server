@@ -1,0 +1,916 @@
+basePath: /
+definitions:
+  article._ExamineReq:
+    properties:
+      examine_status:
+        type: integer
+      id:
+        type: integer
+    type: object
+  article._RemoveReq:
+    properties:
+      id:
+        type: integer
+    type: object
+  article._SetBannerReq:
+    properties:
+      id:
+        type: integer
+      is_banner:
+        type: integer
+    type: object
+  article.CreateReq:
+    properties:
+      city_code:
+        type: integer
+      content:
+        type: string
+      cover:
+        type: string
+      desc:
+        type: string
+      province_code:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  auth.LoginReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  comment._DeleteReq:
+    properties:
+      id:
+        type: integer
+    type: object
+  comment._ExamineReq:
+    properties:
+      examine_status:
+        type: integer
+      id:
+        type: integer
+    type: object
+  comment.CreateReq:
+    properties:
+      article_id:
+        type: integer
+      comment_id:
+        type: integer
+      content:
+        type: string
+    required:
+    - article_id
+    - content
+    type: object
+  comment.RemoveReq:
+    properties:
+      id:
+        type: integer
+    type: object
+  res.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  site._CreateReq:
+    properties:
+      address_detail:
+        type: string
+      city_code:
+        type: integer
+      desc:
+        type: string
+      images:
+        type: string
+      name:
+        type: string
+      province_code:
+        type: integer
+    type: object
+  site._RemoveReq:
+    properties:
+      id:
+        type: integer
+    type: object
+host: 127.0.0.1:8000
+info:
+  contact: {}
+  description: travel-server API文档
+  title: travel-server API文档
+  version: "2.0"
+paths:
+  /api/admin/article/examine:
+    post:
+      description: 管理员审核文章
+      parameters:
+      - description: 审核参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article._ExamineReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员审核文章
+      tags:
+      - 文章管理
+  /api/admin/article/query_list:
+    get:
+      description: 管理员查询文章列表
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: tag_id
+        type: integer
+      - in: query
+        name: title
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员查询文章列表
+      tags:
+      - 文章管理
+  /api/admin/article/remove:
+    post:
+      description: 管理员删除文章
+      parameters:
+      - description: 删除参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article._RemoveReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员删除文章
+      tags:
+      - 文章管理
+  /api/admin/article/set_banner:
+    post:
+      description: 管理员设置banner
+      parameters:
+      - description: 设置参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article._SetBannerReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员设置banner
+      tags:
+      - 文章管理
+  /api/admin/comment/examine:
+    post:
+      description: 管理员审核评论
+      parameters:
+      - description: 审核参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment._ExamineReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员审核评论
+      tags:
+      - 评论管理
+  /api/admin/detail:
+    get:
+      description: 管理员查看文章详情
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员查看文章详情
+      tags:
+      - 文章管理
+  /api/admin/site/create:
+    post:
+      parameters:
+      - description: 创建参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/site._CreateReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 创建景点
+      tags:
+      - 景点管理
+  /api/admin/site/query_list:
+    get:
+      parameters:
+      - in: query
+        name: address_detail
+        type: string
+      - in: query
+        name: city_code
+        type: integer
+      - in: query
+        name: id
+        type: integer
+      - in: query
+        name: name
+        type: string
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: province_code
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询景点列表
+      tags:
+      - 景点管理
+  /api/admin/site/remove:
+    post:
+      parameters:
+      - description: 删除参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/site._RemoveReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除景点
+      tags:
+      - 景点管理
+  /api/admin/site/update:
+    post:
+      parameters:
+      - description: 更新参数
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 更新景点
+      tags:
+      - 景点管理
+  /api/admin/user/query_list:
+    get:
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - in: query
+        name: name
+        type: string
+      - in: query
+        name: nickname
+        type: string
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: role
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 用户列表
+      tags:
+      - 用户管理
+  /api/admin/user/update:
+    post:
+      parameters:
+      - description: 更新参数
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 管理员更新用户
+      tags:
+      - 用户管理
+  /api/auth/get_login_info:
+    get:
+      description: 获取当前登录用户信息
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 获取当前登录用户信息
+      tags:
+      - 鉴权
+  /api/auth/login_by_account:
+    post:
+      description: 账号登录
+      parameters:
+      - description: 登录信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 账号登录
+      tags:
+      - 鉴权
+  /api/comment/create:
+    post:
+      description: 创建评论
+      parameters:
+      - description: 创建参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment.CreateReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 创建评论
+      tags:
+      - 评论管理
+  /api/comment/delete:
+    post:
+      description: 删除评论
+      parameters:
+      - description: 删除参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment._DeleteReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除评论
+      tags:
+      - 评论管理
+  /api/comment/query_list:
+    get:
+      description: 查询评论列表
+      parameters:
+      - in: query
+        name: city
+        type: string
+      - in: query
+        name: content
+        type: string
+      - in: query
+        name: creator
+        type: integer
+      - in: query
+        name: examine_status
+        type: integer
+      - in: query
+        name: ip
+        type: string
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: province
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询评论列表
+      tags:
+      - 评论管理
+  /api/common/query_oss_config:
+    get:
+      description: 获取oss配置
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 获取oss配置
+      tags:
+      - OSS
+  /api/common/upload_file:
+    post:
+      description: 上传文件
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 上传文件
+      tags:
+      - OSS
+  /api/user/article/create:
+    post:
+      description: 创建文章
+      parameters:
+      - description: 创建参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article.CreateReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 创建文章
+      tags:
+      - 文章管理
+  /api/user/article/detail:
+    get:
+      description: 查询文章详情
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询文章详情
+      tags:
+      - 文章管理
+  /api/user/article/query_list:
+    get:
+      description: 查询文章列表
+      parameters:
+      - in: query
+        name: creator
+        type: integer
+      - in: query
+        name: id
+        type: integer
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: tag
+        type: integer
+      - in: query
+        name: title
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询文章列表
+      tags:
+      - 文章管理
+  /api/user/article/query_my_list:
+    get:
+      description: 查询文章列表
+      parameters:
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: tag
+        type: integer
+      - in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询我的文章列表
+      tags:
+      - 文章管理
+  /api/user/comment/query_list:
+    get:
+      description: 查询评论列表
+      parameters:
+      - in: query
+        name: creator
+        type: integer
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询评论列表
+      tags:
+      - 评论管理
+  /api/user/comment/query_list_by_article:
+    get:
+      description: 查询文章评论列表
+      parameters:
+      - in: query
+        name: creator
+        type: integer
+      - default: 1
+        in: query
+        name: page_num
+        type: integer
+      - default: 20
+        in: query
+        name: page_size
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询文章评论列表
+      tags:
+      - 评论管理
+  /api/user/comment/remove:
+    post:
+      description: 删除评论
+      parameters:
+      - description: 删除参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment.RemoveReq'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除评论
+      tags:
+      - 评论管理
+  /api/user/site/detail:
+    get:
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询景点详情
+      tags:
+      - 景点管理
+  /api/user/site/query_list:
+    get:
+      parameters:
+      - in: query
+        name: address_detail
+        type: string
+      - in: query
+        name: city_code
+        type: integer
+      - in: query
+        name: province_code
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询景点列表
+      tags:
+      - 景点管理
+  /api/user/tag/query_list:
+    get:
+      description: 查询标签列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 查询标签列表
+      tags:
+      - 标签管理
+  /api/user/user/update:
+    post:
+      parameters:
+      - description: 更新参数
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 更新用户
+      tags:
+      - 用户管理
+swagger: "2.0"
